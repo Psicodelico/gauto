@@ -82,81 +82,86 @@ const margin = {
 const width = 800 - margin.left - margin.right;
 const height = 600 - margin.top - margin.bottom;
 
+const radius = 5;
+
 // Creates sources <svg> element and inner g (for margins)
 const svg = d3
-    .select(document.getElementById("container"))
-    .append("svg")
-    // .attr("width", width + margin.left + margin.right)
-    // .attr("height", height + margin.top + margin.bottom)
-    .attr("id", "svg-instance")
-    .attr("viewBox", "0, 0, 800, 600")
-    .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    .select(document.getElementById('container'))
+    .append('svg')
+    // .attr('width', width + margin.left + margin.right)
+    // .attr('height', height + margin.top + margin.bottom)
+    .attr('id', 'svg-instance')
+    .attr('viewBox', '0, 0, 800, 600')
+    .append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 /////////////////////////
 
 const simulation = d3
     .forceSimulation()
     .force(
-        "link",
+        'link',
         d3.forceLink().id((d) => d.id))
     // 使每两个节点之间的距离都至少是节点半径的两倍，避免节点相互覆盖
     .force('collision', d3.forceCollide().radius(10 * 2))
-    .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force('charge', d3.forceManyBody())
+    .force('center', d3.forceCenter(width / 2, height / 2));
 
 const color = d3.scaleOrdinal(d3.schemeCategory10);
 
 // Links data join
 /* const link = svg
-    .selectAll(".link")
+    .selectAll('.link')
     .data(result.links)
-    .join((enter) => enter.append("line").attr("class", "link")); */
+    .join((enter) => enter.append('line').attr('class', 'link')); */
 
-const link = svg.append("g")
-    .attr("stroke", "#999")
-    .attr("stroke-opacity", 0.6)
-    .selectAll("line")
+const link = svg.append('g')
+    .attr('stroke', '#999')
+    .attr('stroke-opacity', 0.6)
+    .selectAll('line')
     .data(result.links)
-    .join("line")
-    .attr("stroke-width", d => Math.sqrt(d.value));
+    .join('line')
+    .attr('stroke-width', d => Math.sqrt(d.value));
 
 // Nodes data join
 /* const node = svg
-    .selectAll(".node")
+    .selectAll('.node')
     .data(result.nodes)
     .join((enter) => {
-        const node_enter = enter.append("circle")
-            .attr("class", "node")
-            .attr("r", 10);
-        node_enter.append("title").text((d) => d.id);
+        const node_enter = enter.append('circle')
+            .attr('class', 'node')
+            .attr('r', 10);
+        node_enter.append('title').text((d) => d.id);
         return node_enter;
     }); */
-const node = svg.append("g")
-    .attr("stroke", "#fff")
-    .attr("stroke-width", 1.5)
-    .selectAll("circle")
+const node = svg.append('g')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1.5)
+    .selectAll('circle')
     .data(result.nodes)
-    .join("circle")
-    .attr("r", 5)
-    .attr("fill", color)
+    .join('circle')
+    .attr('r', radius)
+    .attr('fill', color)
     .call(drag(simulation));
-node.append("title")
+node.append('title')
     .text(d => d.id);
-node.style("fill", (d) => color(d.group));
+node.style('fill', (d) => color(d.group));
 
-simulation.nodes(result.nodes).force("link").links(result.links);
+simulation.nodes(result.nodes).force('link').links(result.links);
 
-simulation.on("tick", () => {
+simulation.on('tick', () => {
     link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
 
-    node
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
+    /* node
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y); */
+
+    node.attr('cx', d => Math.max(radius, Math.min(width - radius, d.x)))
+        .attr('cy', d => Math.max(radius, Math.min(height - radius, d.y)));
 });
 
 function drag() {
@@ -179,7 +184,7 @@ function drag() {
     }
 
     return d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended);
 }
