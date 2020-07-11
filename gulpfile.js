@@ -26,6 +26,11 @@ function clean() {
     return del(["./dist/"]);
 }
 
+function index() {
+    return gulp.src('./src/index.html')
+        .pipe(dest('./dist/'));
+}
+
 function css() {
     return gulp
         .src("./src/**/*.less")
@@ -58,7 +63,7 @@ function js() {
 function watch() {
     browserSync.init({
         server: {
-            baseDir: './src/'
+            baseDir: './dist/'
         },
         notify: false,
         port: 3000
@@ -67,7 +72,7 @@ function watch() {
     browserSync.watch('./src/**/*.*').on('change', browserSync.reload);
 }
 
-const build = series(clean, parallel(css, js));
+const build = series(clean, parallel(index, css, js));
 
 exports.css = css;
 exports.js = js;
