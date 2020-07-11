@@ -1,3 +1,78 @@
+var len = yb_mock.length,
+    i = 0;
+var nodes = [],
+    links = [];
+for (; i < len; i++) {
+    let j = 0,
+        innerLen = yb_mock[i].length;
+    for (; j < innerLen; j++) {
+        /* if (i == 0) {
+            break;
+        } */
+        let item = yb_mock[i][j]
+        nodes.push({
+            id: item.id,
+            group: i + 1
+        });
+        if (Array.isArray(item.relations) && item.relations.length > 0) {
+            for (let m = 0; m < item.relations.length; m++) {
+                links.push({
+                    source: item.id,
+                    target: item.relations[m].id,
+                    // value: Math.ceil(10 * Math.random())
+                })
+            }
+        }
+    }
+}
+
+let result = {
+    nodes,
+    links
+}
+/* result = {
+    nodes: [{
+            id: 1,
+            group: 1,
+        },
+        {
+            id: 2,
+            group: 2,
+        },
+        {
+            id: 3,
+            group: 3,
+        },
+        {
+            id: 4,
+            group: 4,
+        },
+        {
+            id: 5,
+            group: 5,
+        },
+    ],
+    links: [{
+            source: 1,
+            target: 2,
+        },
+        {
+            source: 1,
+            target: 3,
+        },
+        {
+            source: 2,
+            target: 4,
+        },
+        {
+            source: 2,
+            target: 5,
+        },
+    ]
+} */
+
+console.log(JSON.stringify(result))
+
 const margin = {
     top: 40,
     bottom: 10,
@@ -9,10 +84,12 @@ const height = 600 - margin.top - margin.bottom;
 
 // Creates sources <svg> element and inner g (for margins)
 const svg = d3
-    .select("body")
+    .select(document.getElementById("container"))
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    // .attr("width", width + margin.left + margin.right)
+    // .attr("height", height + margin.top + margin.bottom)
+    .attr("id", "svg-instance")
+    .attr("viewBox", "0, 0, 800, 600")
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -22,41 +99,87 @@ const simulation = d3
     .forceSimulation()
     .force(
         "link",
-        d3.forceLink().id((d) => d.id)
-    )
+        d3.forceLink().id((d) => d.id))
+    // 使每两个节点之间的距离都至少是节点半径的两倍，避免节点相互覆盖
+    .force('collision', d3.forceCollide().radius(10 * 2))
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-d3.json("../assets/lib/json/miserables.json").then((data) => {
-    // Links data join
-    const link = svg
-        .selectAll(".link")
-        .data(data.links)
-        .join((enter) => enter.append("line").attr("class", "link"));
+// Links data join
+/* const link = svg
+    .selectAll(".link")
+    .data(result.links)
+    .join((enter) => enter.append("line").attr("class", "link")); */
 
-    // Nodes data join
-    const node = svg
-        .selectAll(".node")
-        .data(data.nodes)
-        .join((enter) => {
-            const node_enter = enter.append("circle").attr("class", "node").attr("r", 10);
-            node_enter.append("title").text((d) => d.id);
-            return node_enter;
-        });
+const link = svg.append("g")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6)
+    .selectAll("line")
+    .data(result.links)
+    .join("line")
+    .attr("stroke-width", d => Math.sqrt(d.value));
 
-    node.style("fill", (d) => color(d.group));
+// Nodes data join
+/* const node = svg
+    .selectAll(".node")
+    .data(result.nodes)
+    .join((enter) => {
+        const node_enter = enter.append("circle")
+            .attr("class", "node")
+            .attr("r", 10);
+        node_enter.append("title").text((d) => d.id);
+        return node_enter;
+    }); */
+const node = svg.append("g")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1.5)
+    .selectAll("circle")
+    .data(result.nodes)
+    .join("circle")
+    .attr("r", 5)
+    .attr("fill", color)
+    .call(drag(simulation));
+node.append("title")
+    .text(d => d.id);
+node.style("fill", (d) => color(d.group));
 
-    simulation.nodes(data.nodes).force("link").links(data.links);
+simulation.nodes(result.nodes).force("link").links(result.links);
 
-    simulation.on("tick", (e) => {
-        link
-            .attr("x1", (d) => d.source.x)
-            .attr("y1", (d) => d.source.y)
-            .attr("x2", (d) => d.target.x)
-            .attr("y2", (d) => d.target.y);
+simulation.on("tick", () => {
+    link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
 
-        node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-    });
+    node
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
 });
+
+function drag() {
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+}
