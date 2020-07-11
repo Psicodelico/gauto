@@ -79,6 +79,7 @@ function watch() {
 
 function watchFiles() {
     gulp.watch("./src/index.html", index);
+    gulp.watch("./src/assets/**/*", assets);
     gulp.watch("./src/style/**/*.less", css);
     gulp.watch("./src/js/**/*.js", js);
 }
