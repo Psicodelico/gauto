@@ -21,16 +21,21 @@ d3.json("../assets/lib/json/graph.json", function (error, graph) {
         .data(graph.links)
         .enter().append("line");
 
-    var node = svg.selectAll("circle")
+    var node = svg.selectAll("image")
         .data(graph.nodes)
-        .enter().append("circle")
-        .attr("r", radius - .75)
+        .enter()
+        .append("image")
+        .attr('xlink:href', '../assets/images/HOST.png')
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('transform', 'translate(-10,-10)')
+        /* .attr("r", radius - .75)
         .style("fill", function (d) {
             return fill(d.group);
         })
         .style("stroke", function (d) {
             return d3.rgb(fill(d.group)).darker();
-        })
+        }) */
         .call(force.drag);
 
     force
@@ -40,10 +45,10 @@ d3.json("../assets/lib/json/graph.json", function (error, graph) {
         .start();
 
     function tick() {
-        node.attr("cx", function (d) {
+        node.attr("x", function (d) {
                 return d.x = Math.max(radius, Math.min(width - radius, d.x));
             })
-            .attr("cy", function (d) {
+            .attr("y", function (d) {
                 return d.y = Math.max(radius, Math.min(height - radius, d.y));
             });
 
