@@ -33,22 +33,22 @@ function index() {
 
 function css() {
     return gulp
-        .src("./src/**/*.less")
+        .src("./src/style/**/*.less")
         .pipe(plumber())
         .pipe(less())
-        .pipe(dest("./dist/css/"))
+        .pipe(dest("./dist/style/"))
         .pipe(rename({
             suffix: ".min"
         }))
         .pipe(postcss([autoprefixer(), cssnano()]))
-        .pipe(dest("./dist/css/"))
+        .pipe(dest("./dist/style/"))
         .pipe(browserSync.stream());
 }
 
 function js() {
     return (
         gulp
-        .src(["./src/**/*.js"])
+        .src(["./src/js/**/*.js"])
         .pipe(plumber())
         .pipe(babel({
             presets: ['@babel/preset-env']
@@ -69,7 +69,13 @@ function watch() {
         port: 3000
     });
 
-    browserSync.watch('./src/**/*.*').on('change', browserSync.reload);
+    browserSync.watch('./dist/**/*.*').on('change', browserSync.reload);
+}
+
+function watchFiles() {
+    gulp.watch("./src/index.html", index);
+    gulp.watch("./src/style/**/*.less", css);
+    gulp.watch("./src/js/**/*.js", js);
 }
 
 const build = series(clean, parallel(index, css, js));
@@ -80,5 +86,4 @@ exports.js = js;
 exports.clean = clean;
 exports.build = build;
 
-exports.watch = watch;
-exports.default = watch;
+exports.default = series(build, parallel(watchFiles, watch));
