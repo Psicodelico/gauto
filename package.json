@@ -16,6 +16,14 @@
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-less": "^4.0.1",
-    "gulp-postcss": "^8.0.0"
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^2.0.0",
+    "webpack-stream": "^5.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "gulp-babel": "^8.0.0"
   }
 }

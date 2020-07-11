@@ -6,6 +6,8 @@ const imagemin = require("gulp-imagemin");
 
 const newer = require("gulp-newer");
 
+const plumber = require("gulp-plumber");
+const rename = require("gulp-rename");
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
 const postcss = require("gulp-postcss");
@@ -13,8 +15,6 @@ const sass = require("gulp-sass");
 
 const cp = require("child_process");
 const eslint = require("gulp-eslint");
-const plumber = require("gulp-plumber");
-const rename = require("gulp-rename");
 const webpack = require("webpack");
 const webpackconfig = require("./webpack.config.js");
 const webpackstream = require("webpack-stream");
