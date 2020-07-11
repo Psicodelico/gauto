@@ -137,14 +137,14 @@ var yb_mock = [
             id: 'fafbffab-dca4-40a8-aee7-244e8e92ee18',
             type: 'VNF',
             relations: [{
-                    id: '3e0d935e-c94a-4d3a-bf15-61b0085c1491',
+                    id: 'asdf',
                     linktype: 'toVm'
                 },
                 {
-                    id: '10fc013f-7241-4407-98f0-6f2ca2e01bef',
+                    id: 'a2',
                     linktype: 'toVm'
                 },
-                {
+                /* {
                     id: 'b5a4ad9a-fdb4-4bfc-9310-6821a875bf94',
                     linktype: 'toVm'
                 },
@@ -163,11 +163,11 @@ var yb_mock = [
                 {
                     id: 'bc248934-f21a-4d2a-a3a8-0689ecfd4e39',
                     linktype: 'toVm'
-                }
+                } */
             ]
         },
         {
-            id: '3e0d935e-c94a-4d3a-bf15-61b0085c1491',
+            id: 'asdf',
             type: 'VM',
             relations: [{
                 id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
@@ -179,14 +179,14 @@ var yb_mock = [
             type: 'HOST'
         },
         {
-            id: '10fc013f-7241-4407-98f0-6f2ca2e01bef',
+            id: 'a2',
             type: 'VM',
             relations: [{
                 id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
                 linktype: 'toHost'
             }]
         },
-        {
+        /* {
             id: 'b5a4ad9a-fdb4-4bfc-9310-6821a875bf94',
             type: 'VM',
             relations: [{
@@ -233,6 +233,6 @@ var yb_mock = [
                 id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
                 linktype: 'toHost'
             }]
-        }
+        } */
     ]
 ];
