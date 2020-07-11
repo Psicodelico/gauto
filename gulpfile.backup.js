@@ -1,16 +1,20 @@
-const autoprefixer = require("autoprefixer");
-const browsersync = require("browser-sync").create();
-const cp = require("child_process");
-const cssnano = require("cssnano");
-const del = require("del");
-const eslint = require("gulp-eslint");
 const gulp = require("gulp");
+const browsersync = require("browser-sync").create();
+
+const del = require("del");
 const imagemin = require("gulp-imagemin");
+
 const newer = require("gulp-newer");
-const plumber = require("gulp-plumber");
+
+const autoprefixer = require("autoprefixer");
+const cssnano = require("cssnano");
 const postcss = require("gulp-postcss");
-const rename = require("gulp-rename");
 const sass = require("gulp-sass");
+
+const cp = require("child_process");
+const eslint = require("gulp-eslint");
+const plumber = require("gulp-plumber");
+const rename = require("gulp-rename");
 const webpack = require("webpack");
 const webpackconfig = require("./webpack.config.js");
 const webpackstream = require("webpack-stream");

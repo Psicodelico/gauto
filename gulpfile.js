@@ -10,17 +10,12 @@ const cssnano = require("cssnano");
 
 const {
     series,
-    parallel
+    parallel,
+    dest
 } = gulp;
 
 function clean() {
     return del(["./dist/"]);
-}
-
-function images(cb) {
-    console.log('css');
-    // body omitted
-    cb();
 }
 
 function css(cb) {
@@ -49,7 +44,6 @@ function watch() {
 
 const build = series(clean, parallel(images, css, js));
 
-exports.images = images;
 exports.css = css;
 exports.js = js;
 
