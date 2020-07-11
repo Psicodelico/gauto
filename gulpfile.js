@@ -31,6 +31,11 @@ function index() {
         .pipe(dest('./dist/'));
 }
 
+function assets() {
+    return gulp.src('./src/assets/**/*')
+        .pipe(dest('./dist/assets/'));
+}
+
 function css() {
     return gulp
         .src("./src/style/**/*.less")
@@ -78,7 +83,7 @@ function watchFiles() {
     gulp.watch("./src/js/**/*.js", js);
 }
 
-const build = series(clean, parallel(index, css, js));
+const build = series(clean, parallel(index, assets, css, js));
 
 exports.css = css;
 exports.js = js;
