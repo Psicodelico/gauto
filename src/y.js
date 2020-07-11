@@ -1,1 +1,4 @@
-var a = 1;
+const a = 1;
+const b = () => {
+    return 2;
+}
