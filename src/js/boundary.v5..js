@@ -12,6 +12,7 @@ for (; i < len; i++) {
         let item = yb_mock[i][j]
         nodes.push({
             id: item.id,
+            type: item.type,
             group: i + 1
         });
         if (Array.isArray(item.relations) && item.relations.length > 0) {
@@ -30,46 +31,6 @@ let result = {
     nodes,
     links
 }
-/* result = {
-    nodes: [{
-            id: 1,
-            group: 1,
-        },
-        {
-            id: 2,
-            group: 2,
-        },
-        {
-            id: 3,
-            group: 3,
-        },
-        {
-            id: 4,
-            group: 4,
-        },
-        {
-            id: 5,
-            group: 5,
-        },
-    ],
-    links: [{
-            source: 1,
-            target: 2,
-        },
-        {
-            source: 1,
-            target: 3,
-        },
-        {
-            source: 2,
-            target: 4,
-        },
-        {
-            source: 2,
-            target: 5,
-        },
-    ]
-} */
 const eleWrapper = document.getElementById('svg-wrapper');
 const eleRect = eleWrapper.getBoundingClientRect();
 
@@ -84,7 +45,7 @@ const svg = d3
     .append('g')
     .attr('transform', `translate(${0}, ${0})`);
 
-const radius = 5;
+const radius = 15;
 
 const link = svg.append('g')
     .selectAll('line')
@@ -94,12 +55,15 @@ const link = svg.append('g')
 
 const color = d3.scaleOrdinal(d3.schemeCategory10);
 const node = svg.append('g')
-    .selectAll('circle')
+    .selectAll('image')
     .data(result.nodes)
-    .join('circle')
-    .attr('r', radius)
-    // .attr('fill', color)
-    .style('fill', (d) => color(d.group))
+    .join('image')
+    .attr('xlink:href', d => {
+        return `../assets/images/topo/${d.type}.png`
+    })
+    .attr('width', 2 * radius)
+    .attr('height', 2 * radius)
+    .attr('transform', `translate(${-radius},${-radius})`)
     .call(drag(simulation));
 node.append('title')
     .text(d => d.id);
@@ -110,7 +74,7 @@ const simulation = d3
         'link',
         d3.forceLink().id((d) => d.id))
     // 使每两个节点之间的距离都至少是节点半径的两倍，避免节点相互覆盖
-    .force('collision', d3.forceCollide().radius(10 * 2))
+    .force('collision', d3.forceCollide().radius(radius * 2))
     .force('charge', d3.forceManyBody())
     .force('center', d3.forceCenter(width / 2, height / 2));
 simulation.nodes(result.nodes).force('link').links(result.links);
@@ -122,8 +86,8 @@ simulation.on('tick', () => {
         .attr('x2', d => Math.max(radius, Math.min(width - radius, d.target.x)))
         .attr('y2', d => Math.max(radius, Math.min(height - radius, d.target.y)));
 
-    node.attr('cx', d => Math.max(radius, Math.min(width - radius, d.x)))
-        .attr('cy', d => Math.max(radius, Math.min(height - radius, d.y)));
+    node.attr('x', d => Math.max(radius, Math.min(width - radius, d.x)))
+        .attr('y', d => Math.max(radius, Math.min(height - radius, d.y)));
 });
 
 function drag() {

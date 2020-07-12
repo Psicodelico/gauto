@@ -25,7 +25,7 @@ d3.json("../assets/lib/json/graph.json", function (error, graph) {
         .data(graph.nodes)
         .enter()
         .append("image")
-        .attr('xlink:href', '../assets/images/HOST.png')
+        .attr('xlink:href', '../assets/images/topo/HOST.png')
         .attr('width', 20)
         .attr('height', 20)
         .attr('transform', 'translate(-10,-10)')
