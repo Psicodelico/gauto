@@ -64,45 +64,6 @@ const svg = origin
 
 const radius = 15;
 
-function setData() {}
-
-const link = svg.append('g')
-    .selectAll('line')
-    .data(result.links)
-    .join('line')
-    .attr('stroke-width', 1);
-
-const color = d3.scaleOrdinal(d3.schemeCategory10);
-const node = svg.append('g')
-    .selectAll('g')
-    .data(result.nodes)
-    .join('g')
-    .call(drag())
-    .on('mouseover', nodeOver)
-    .on('mouseout', nodeOut);
-
-const img = node
-    .append('image')
-    .attr('xlink:href', d => {
-        return `../assets/images/topo/${d.type}.png`
-    })
-    .attr('width', 2 * radius)
-    .attr('height', 2 * radius)
-    .attr('transform', `translate(${-radius},${-radius})`)
-img.append('title')
-    .text(d => d.id);
-
-const label = node.append('text')
-    .attr('transform', 'scale(0.75)')
-    .text(d => d.type)
-    .attr('x', function (d) {
-        return -this.getBBox().width / 2
-    })
-    .attr('y', 36)
-/* .each(function (d) {
-    d.width = this.getBBox().width;
-}) */
-
 const simulation = d3
     .forceSimulation()
     .force(
@@ -112,10 +73,9 @@ const simulation = d3
     .force('collision', d3.forceCollide().radius(radius * 3))
     .force('charge', d3.forceManyBody())
     .force('center', d3.forceCenter(width / 2, height / 2));
-simulation.nodes(result.nodes).force('link').links(result.links);
 
 simulation.on('tick', () => {
-    link
+    links
         .attr('x1', d => d.source.x) //Math.max(radius, Math.min(width - radius, d.source.x)))
         .attr('y1', d => d.source.y) //Math.max(radius, Math.min(height - radius, d.source.y)))
         .attr('x2', d => d.target.x) //Math.max(radius, Math.min(width - radius, d.target.x)))
@@ -123,8 +83,54 @@ simulation.on('tick', () => {
 
     /* node.attr('x', d => d.x) //Math.max(radius, Math.min(width - radius, d.x)))
         .attr('y', d => d.y) //Math.max(radius, Math.min(height - radius, d.y))); */
-    node.attr('transform', d => `translate(${d.x},${d.y})`)
+    nodes.attr('transform', d => `translate(${d.x},${d.y})`)
 });
+
+var links, nodes;
+
+function setData(result) {
+    links = svg.append('g')
+        .selectAll('line')
+        .data(result.links)
+        .join('line')
+        .attr('stroke-width', 1);
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    console.log(color);
+
+    nodes = svg.append('g')
+        .selectAll('g')
+        .data(result.nodes)
+        .join('g')
+        .call(drag())
+        .on('mouseover', nodeOver)
+        .on('mouseout', nodeOut);
+
+    const img = nodes
+        .append('image')
+        .attr('xlink:href', d => {
+            return `../assets/images/topo/${d.type}.png`
+        })
+        .attr('width', 2 * radius)
+        .attr('height', 2 * radius)
+        .attr('transform', `translate(${-radius},${-radius})`)
+    img.append('title')
+        .text(d => d.id);
+
+    const label = nodes.append('text')
+        .attr('transform', 'scale(0.75)')
+        .text(d => d.type)
+        .attr('x', function (d) {
+            return -this.getBBox().width / 2
+        })
+        .attr('y', 36)
+    /* .each(function (d) {
+        d.width = this.getBBox().width;
+    }) */
+    simulation.nodes(result.nodes).force('link').links(result.links);
+}
+
+setData(result);
 
 function drag() {
 
@@ -152,7 +158,7 @@ function drag() {
 }
 
 function nodeOver(d) {
-    link.style('stroke', function (l) {
+    links.style('stroke', function (l) {
         var color = '#999';
         if (d.id === l.target.id) {
             color = '#f00';
@@ -164,5 +170,5 @@ function nodeOver(d) {
 }
 
 function nodeOut(d) {
-    link.style('stroke', '#999')
+    links.style('stroke', '#999')
 }
