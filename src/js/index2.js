@@ -86,11 +86,9 @@ const radius = 5;
 
 // Creates sources <svg> element and inner g (for margins)
 const svg = d3
-    .select(document.getElementById('container'))
-    .append('svg')
+    .select(document.getElementById('svg'))
     // .attr('width', width + margin.left + margin.right)
     // .attr('height', height + margin.top + margin.bottom)
-    .attr('id', 'svg-instance')
     .attr('viewBox', '0, 0, 800, 600')
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
@@ -151,14 +149,10 @@ simulation.nodes(result.nodes).force('link').links(result.links);
 
 simulation.on('tick', () => {
     link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
-
-    /* node
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y); */
+        .attr('x1', d => Math.max(radius, Math.min(width - radius, d.source.x)))
+        .attr('y1', d => Math.max(radius, Math.min(height - radius, d.source.y)))
+        .attr('x2', d => Math.max(radius, Math.min(width - radius, d.target.x)))
+        .attr('y2', d => Math.max(radius, Math.min(height - radius, d.target.y)));
 
     node.attr('cx', d => Math.max(radius, Math.min(width - radius, d.x)))
         .attr('cy', d => Math.max(radius, Math.min(height - radius, d.y)));
