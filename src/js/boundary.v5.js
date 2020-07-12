@@ -33,7 +33,6 @@ function digest(mock) {
     }
 }
 
-let result = digest(yb_mock);
 
 const eleWrapper = document.getElementById('svg-wrapper');
 const eleRect = eleWrapper.getBoundingClientRect();
@@ -59,7 +58,7 @@ function reset() {
 }
 
 function add() {
-    setData();
+    setData(digest(yb_mock2));
 }
 
 const svg = origin
@@ -135,6 +134,7 @@ function setData(result) {
     simulation.nodes(result.nodes).force('link').links(result.links);
 }
 
+let result = digest(yb_mock);
 setData(result);
 
 function drag() {

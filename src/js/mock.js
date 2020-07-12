@@ -126,18 +126,18 @@ var yb_mock = [
         }
     ],
     [{
-            id: 'vim_13210',
+            id: 'vim1',
             type: 'VIM',
             relations: [{
-                id: 'fafbffab-dca4-40a8-aee7-244e8e92ee18',
+                id: 'vnf1',
                 linktype: 'toVnf'
             }]
         },
         {
-            id: 'fafbffab-dca4-40a8-aee7-244e8e92ee18',
+            id: 'vnf1',
             type: 'VNF',
             relations: [{
-                    id: 'asdf',
+                    id: 'a1',
                     linktype: 'toVm'
                 },
                 {
@@ -147,22 +147,19 @@ var yb_mock = [
             ]
         },
         {
-            id: 'asdf',
+            id: 'a1',
             type: 'VM',
-            relations: [{
-                id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
-                linktype: 'toHost'
-            }]
+            relations: []
         },
         {
-            id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
+            id: 'host1',
             type: 'HOST'
         },
         {
             id: 'a2',
             type: 'VM',
             relations: [{
-                id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
+                id: 'host1',
                 linktype: 'toHost'
             }]
         },
@@ -280,55 +277,38 @@ var yb_mock2 = [
         }
     ],
     [{
-            id: 'vim_13210',
+            id: 'vim1',
             type: 'VIM',
             relations: [{
-                id: 'fafbffab-dca4-40a8-aee7-244e8e92ee18',
+                id: 'vnf1',
                 linktype: 'toVnf'
             }]
         },
         {
-            id: 'fafbffab-dca4-40a8-aee7-244e8e92ee18',
+            id: 'vnf1',
             type: 'VNF',
             relations: [{
-                    id: 'asdf',
-                    linktype: 'toVm'
-                },
-                {
-                    id: 'a2',
-                    linktype: 'toVm'
-                },
-                {
-                    id: 'a3',
-                    linktype: 'toVm'
-                },
-            ]
+                id: 'a2',
+                linktype: 'toVm'
+            }, ]
         },
         {
-            id: 'asdf',
-            type: 'VM',
-            relations: [{
-                id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
-                linktype: 'toHost'
-            }]
-        },
-        {
-            id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
+            id: 'host1',
             type: 'HOST'
+        },
+        {
+            id: 'host2',
+            type: 'HOST',
+            relations: [{
+                id: 'vim1',
+                linkType: 'toVim'
+            }]
         },
         {
             id: 'a2',
             type: 'VM',
             relations: [{
-                id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
-                linktype: 'toHost'
-            }]
-        },
-        {
-            id: 'a3',
-            type: 'VM',
-            relations: [{
-                id: 'f10e9bba-d4df-11e9-86c7-0242ac11000b',
+                id: 'host1',
                 linktype: 'toHost'
             }]
         },
