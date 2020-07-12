@@ -87,10 +87,15 @@ img.append('title')
     .text(d => d.id);
 
 const label = node.append('text')
-    .attr('x', -18)
-    .attr('y', 36)
     .attr('transform', 'scale(0.75)')
     .text(d => d.type)
+    .attr('x', function (d) {
+        return -this.getBBox().width / 2
+    })
+    .attr('y', 36)
+/* .each(function (d) {
+    d.width = this.getBBox().width;
+}) */
 
 const simulation = d3
     .forceSimulation()
