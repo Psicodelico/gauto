@@ -31,6 +31,7 @@ let result = {
     nodes,
     links
 }
+
 const eleWrapper = document.getElementById('svg-wrapper');
 const eleRect = eleWrapper.getBoundingClientRect();
 
@@ -39,11 +40,25 @@ const height = eleRect.height;
 
 const element = document.getElementById('svg');
 
-const svg = d3
+const zoom = d3.zoom().on("zoom", function () {
+    svg.attr("transform", d3.event.transform)
+})
+
+const origin = d3
     .select(element)
     .attr('viewBox', `0, 0, ${width}, ${height}`)
+    .call(zoom);
+
+function reset() {
+    origin.transition()
+        .duration(750)
+        .call(zoom.transform, d3.zoomIdentity);
+}
+
+const svg = origin
     .append('g')
     .attr('transform', `translate(${0}, ${0})`);
+
 
 const radius = 15;
 
@@ -81,13 +96,13 @@ simulation.nodes(result.nodes).force('link').links(result.links);
 
 simulation.on('tick', () => {
     link
-        .attr('x1', d => Math.max(radius, Math.min(width - radius, d.source.x)))
-        .attr('y1', d => Math.max(radius, Math.min(height - radius, d.source.y)))
-        .attr('x2', d => Math.max(radius, Math.min(width - radius, d.target.x)))
-        .attr('y2', d => Math.max(radius, Math.min(height - radius, d.target.y)));
+        .attr('x1', d => d.source.x) //Math.max(radius, Math.min(width - radius, d.source.x)))
+        .attr('y1', d => d.source.y) //Math.max(radius, Math.min(height - radius, d.source.y)))
+        .attr('x2', d => d.target.x) //Math.max(radius, Math.min(width - radius, d.target.x)))
+        .attr('y2', d => d.target.y) //Math.max(radius, Math.min(height - radius, d.target.y)));
 
-    node.attr('x', d => Math.max(radius, Math.min(width - radius, d.x)))
-        .attr('y', d => Math.max(radius, Math.min(height - radius, d.y)));
+    node.attr('x', d => d.x) //Math.max(radius, Math.min(width - radius, d.x)))
+        .attr('y', d => d.y) //Math.max(radius, Math.min(height - radius, d.y)));
 });
 
 function drag() {
