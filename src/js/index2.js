@@ -86,7 +86,23 @@ const svg = d3
 
 const radius = 5;
 
-/////////////////////////
+const link = svg.append('g')
+    .selectAll('line')
+    .data(result.links)
+    .join('line')
+    .attr('stroke-width', 1);
+
+const color = d3.scaleOrdinal(d3.schemeCategory10);
+const node = svg.append('g')
+    .selectAll('circle')
+    .data(result.nodes)
+    .join('circle')
+    .attr('r', radius)
+    // .attr('fill', color)
+    .style('fill', (d) => color(d.group))
+    .call(drag(simulation));
+node.append('title')
+    .text(d => d.id);
 
 const simulation = d3
     .forceSimulation()
@@ -97,47 +113,6 @@ const simulation = d3
     .force('collision', d3.forceCollide().radius(10 * 2))
     .force('charge', d3.forceManyBody())
     .force('center', d3.forceCenter(width / 2, height / 2));
-
-const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-// Links data join
-/* const link = svg
-    .selectAll('.link')
-    .data(result.links)
-    .join((enter) => enter.append('line').attr('class', 'link')); */
-
-const link = svg.append('g')
-    .attr('stroke', '#999')
-    .attr('stroke-opacity', 0.6)
-    .selectAll('line')
-    .data(result.links)
-    .join('line')
-    .attr('stroke-width', d => Math.sqrt(d.value));
-
-// Nodes data join
-/* const node = svg
-    .selectAll('.node')
-    .data(result.nodes)
-    .join((enter) => {
-        const node_enter = enter.append('circle')
-            .attr('class', 'node')
-            .attr('r', 10);
-        node_enter.append('title').text((d) => d.id);
-        return node_enter;
-    }); */
-const node = svg.append('g')
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 1.5)
-    .selectAll('circle')
-    .data(result.nodes)
-    .join('circle')
-    .attr('r', radius)
-    .attr('fill', color)
-    .call(drag(simulation));
-node.append('title')
-    .text(d => d.id);
-node.style('fill', (d) => color(d.group));
-
 simulation.nodes(result.nodes).force('link').links(result.links);
 
 simulation.on('tick', () => {

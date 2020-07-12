@@ -56,7 +56,8 @@ function js() {
         .src(["./src/js/**/*.js"])
         .pipe(plumber())
         .pipe(babel({
-            presets: ['@babel/preset-env']
+            presets: ['@babel/preset-env'],
+            plugins: []
         }))
         // .pipe(webpackstream(webpackconfig, webpack))
         // folder only, filename is specified in webpack config
