@@ -30,7 +30,7 @@ function action() {
             enter => enter.append("text")
             .attr("fill", "green")
             .attr("x", (d, i) => i * 16)
-            .attr("y", -30)
+            .attr("y", -30) // 导致整个g的起始点y为-30
             .text(d => d)
             .call(enter => enter.transition(t)
                 .attr("y", 0)),
