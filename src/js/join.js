@@ -16,12 +16,11 @@ const svg = d3
     .select(element)
     .attr('viewBox', `0, 0, ${width}, ${height}`)
     .append('g')
-    .attr('transform', `translate(${0}, ${0})`);
+    .attr('transform', `translate(${40}, ${40})`);
 
-while (true) {
+function action() {
     const t = svg.transition()
         .duration(750);
-    debugger;
     svg.selectAll("text")
         .data(randomLetters(), d => d)
         .join(
@@ -38,12 +37,12 @@ while (true) {
             .call(update => update.transition(t)
                 .attr("x", (d, i) => i * 16)),
             exit => exit
-            .attr("fill", "brown")
+            .attr("fill", "grey")
             .call(exit => exit.transition(t)
                 .attr("y", 30)
                 .remove())
         );
+};
+action();
 
-    yield svg.node();
-    await Promises.tick(2500);
-}
+setInterval(action, 2500);
