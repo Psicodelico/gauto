@@ -16,7 +16,10 @@ const svg = d3
     .select(element)
     .attr('viewBox', `0, 0, ${width}, ${height}`)
     .append('g')
-    .attr('transform', `translate(${40}, ${40})`);
+    .attr('transform', `translate(${0}, ${30})`);
+
+const eleBox = element.getBBox();
+console.log(eleBox);
 
 function action() {
     const t = svg.transition()
