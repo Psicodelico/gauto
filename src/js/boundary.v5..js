@@ -1,36 +1,39 @@
-var len = yb_mock.length,
-    i = 0;
-var nodes = [],
-    links = [];
-for (; i < len; i++) {
-    let j = 0,
-        innerLen = yb_mock[i].length;
-    for (; j < innerLen; j++) {
-        /* if (i == 0) {
-            break;
-        } */
-        let item = yb_mock[i][j]
-        nodes.push({
-            id: item.id,
-            type: item.type,
-            group: i + 1
-        });
-        if (Array.isArray(item.relations) && item.relations.length > 0) {
-            for (let m = 0; m < item.relations.length; m++) {
-                links.push({
-                    source: item.id,
-                    target: item.relations[m].id,
-                    // value: Math.ceil(10 * Math.random())
-                })
+function digest(mock) {
+    var len = mock.length,
+        i = 0;
+    var nodes = [],
+        links = [];
+    for (; i < len; i++) {
+        let j = 0,
+            innerLen = mock[i].length;
+        for (; j < innerLen; j++) {
+            /* if (i == 0) {
+                break;
+            } */
+            let item = mock[i][j]
+            nodes.push({
+                id: item.id,
+                type: item.type,
+                group: i + 1
+            });
+            if (Array.isArray(item.relations) && item.relations.length > 0) {
+                for (let m = 0; m < item.relations.length; m++) {
+                    links.push({
+                        source: item.id,
+                        target: item.relations[m].id,
+                        // value: Math.ceil(10 * Math.random())
+                    })
+                }
             }
         }
     }
+    return {
+        nodes,
+        links
+    }
 }
 
-let result = {
-    nodes,
-    links
-}
+let result = digest(yb_mock);
 
 const eleWrapper = document.getElementById('svg-wrapper');
 const eleRect = eleWrapper.getBoundingClientRect();
@@ -55,7 +58,9 @@ function reset() {
         .call(zoom.transform, d3.zoomIdentity);
 }
 
-function add() {}
+function add() {
+    setData();
+}
 
 const svg = origin
     .append('g')
