@@ -70,28 +70,21 @@ let result = {
         },
     ]
 } */
+const eleWrapper = document.getElementById('svg-wrapper');
+const eleRect = eleWrapper.getBoundingClientRect();
 
-console.log(JSON.stringify(result))
+const width = eleRect.width;
+const height = eleRect.height;
 
-const margin = {
-    top: 40,
-    bottom: 10,
-    left: 20,
-    right: 20,
-};
-const width = 800 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
+const element = document.getElementById('svg');
+
+const svg = d3
+    .select(element)
+    .attr('viewBox', `0, 0, ${width}, ${height}`)
+    .append('g')
+    .attr('transform', `translate(${0}, ${0})`);
 
 const radius = 5;
-
-// Creates sources <svg> element and inner g (for margins)
-const svg = d3
-    .select(document.getElementById('svg'))
-    // .attr('width', width + margin.left + margin.right)
-    // .attr('height', height + margin.top + margin.bottom)
-    .attr('viewBox', '0, 0, 800, 600')
-    .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 /////////////////////////
 
