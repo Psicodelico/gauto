@@ -70,18 +70,27 @@ const link = svg.append('g')
 
 const color = d3.scaleOrdinal(d3.schemeCategory10);
 const node = svg.append('g')
-    .selectAll('image')
+    .selectAll('g')
     .data(result.nodes)
-    .join('image')
+    .join('g')
+    .call(drag(simulation));
+
+const img = node
+    .append('image')
     .attr('xlink:href', d => {
         return `../assets/images/topo/${d.type}.png`
     })
     .attr('width', 2 * radius)
     .attr('height', 2 * radius)
     .attr('transform', `translate(${-radius},${-radius})`)
-    .call(drag(simulation));
-node.append('title')
+img.append('title')
     .text(d => d.id);
+
+const label = node.append('text')
+    .attr('x', -18)
+    .attr('y', 36)
+    .attr('transform', 'scale(0.75)')
+    .text(d => d.type)
 
 const simulation = d3
     .forceSimulation()
@@ -89,7 +98,7 @@ const simulation = d3
         'link',
         d3.forceLink().id((d) => d.id))
     // 使每两个节点之间的距离都至少是节点半径的两倍，避免节点相互覆盖
-    .force('collision', d3.forceCollide().radius(radius * 2))
+    .force('collision', d3.forceCollide().radius(radius * 3))
     .force('charge', d3.forceManyBody())
     .force('center', d3.forceCenter(width / 2, height / 2));
 simulation.nodes(result.nodes).force('link').links(result.links);
@@ -101,8 +110,9 @@ simulation.on('tick', () => {
         .attr('x2', d => d.target.x) //Math.max(radius, Math.min(width - radius, d.target.x)))
         .attr('y2', d => d.target.y) //Math.max(radius, Math.min(height - radius, d.target.y)));
 
-    node.attr('x', d => d.x) //Math.max(radius, Math.min(width - radius, d.x)))
-        .attr('y', d => d.y) //Math.max(radius, Math.min(height - radius, d.y)));
+    /* node.attr('x', d => d.x) //Math.max(radius, Math.min(width - radius, d.x)))
+        .attr('y', d => d.y) //Math.max(radius, Math.min(height - radius, d.y))); */
+    node.attr('transform', d => `translate(${d.x},${d.y})`)
 });
 
 function drag() {
