@@ -55,12 +55,16 @@ function reset() {
         .call(zoom.transform, d3.zoomIdentity);
 }
 
+function add() {}
+
 const svg = origin
     .append('g')
     .attr('transform', `translate(${0}, ${0})`);
 
 
 const radius = 15;
+
+function setData() {}
 
 const link = svg.append('g')
     .selectAll('line')
@@ -73,7 +77,9 @@ const node = svg.append('g')
     .selectAll('g')
     .data(result.nodes)
     .join('g')
-    .call(drag(simulation));
+    .call(drag())
+    .on('mouseover', nodeOver)
+    .on('mouseout', nodeOut);
 
 const img = node
     .append('image')
@@ -143,4 +149,20 @@ function drag() {
         .on('start', dragstarted)
         .on('drag', dragged)
         .on('end', dragended);
+}
+
+function nodeOver(d) {
+    link.style('stroke', function (l) {
+        var color = '#999';
+        if (d.id === l.target.id) {
+            color = '#f00';
+        } else if (d.id === l.source.id) {
+            color = '#00f'
+        }
+        return color;
+    })
+}
+
+function nodeOut(d) {
+    link.style('stroke', '#999')
 }
