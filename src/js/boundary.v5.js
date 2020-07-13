@@ -98,46 +98,7 @@ function create() {
     // invalidation.then(() => simulation.stop());
     // simulation.stop();
 
-    // events start
-    function drag() {
-        function dragstarted(d) {
-            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }
 
-        function dragged(d) {
-            d.fx = d3.event.x;
-            d.fy = d3.event.y;
-        }
-
-        function dragended(d) {
-            if (!d3.event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-        }
-        return d3.drag()
-            .on('start', dragstarted)
-            .on('drag', dragged)
-            .on('end', dragended);
-    }
-
-    function nodeOver(d) {
-        links.style('stroke', function (l) {
-            var color = '#999';
-            if (d.id === l.target.id) {
-                color = '#1d74f8';
-            } else if (d.id === l.source.id) {
-                color = '#1d74f8'
-            }
-            return color;
-        })
-    }
-
-    function nodeOut(d) {
-        links.style('stroke', '#999')
-    }
-    // events end
     return Object.assign(svg, {
         resetZoom() {
             svg.transition()
@@ -158,34 +119,74 @@ function create() {
                 .attr('stroke-width', 1);
 
             nodes = nodes.data(n)
-                .join('g')
-                .call(drag())
-                .on('mouseover', nodeOver)
-                .on('mouseout', nodeOut);
+                .join(enter => {
+                    const g = enter.append('g')
+                        .call(drag())
+                        .on('mouseover', nodeOver)
+                        .on('mouseout', nodeOut);;
+                    const img = g
+                        .append('image')
+                        .attr('xlink:href', d => {
+                            return `../assets/images/topo/${d.type}.png`
+                        })
+                        .attr('width', 2 * param.radius)
+                        .attr('height', 2 * param.radius)
+                        .attr('transform', `translate(${-param.radius},${-param.radius})`)
+                    img.append('title')
+                        .text(d => d.id);
 
-            const img = nodes
-                .append('image')
-                .attr('xlink:href', d => {
-                    return `../assets/images/topo/${d.type}.png`
-                })
-                .attr('width', 2 * param.radius)
-                .attr('height', 2 * param.radius)
-                .attr('transform', `translate(${-param.radius},${-param.radius})`)
-            img.append('title')
-                .text(d => d.id);
-
-            nodes.append('text')
-                .attr('transform', 'scale(0.75)')
-                .text(d => d.type)
-                .attr('x', function (d) {
-                    return -this.getBBox().width / 2
-                })
-                .attr('y', 36)
-            // .each(function (d) {
-            //     d.width = this.getBBox().width;
-            // })
+                    g.append('text')
+                        .attr('transform', 'scale(0.75)')
+                        .text(d => d.type)
+                        .attr('x', function (d) {
+                            return -this.getBBox().width / 2
+                        })
+                        .attr('y', 36)
+                    return g;
+                });
             simulation.nodes(n).force('link').links(l);
             simulation.alpha(1).restart();
+
+            // events start
+            function drag() {
+                function dragstarted(d) {
+                    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                function dragged(d) {
+                    d.fx = d3.event.x;
+                    d.fy = d3.event.y;
+                }
+
+                function dragended(d) {
+                    if (!d3.event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }
+                return d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended);
+            }
+
+            function nodeOver(d) {
+                links.style('stroke', function (l) {
+                    var color = '#999';
+                    if (d.id === l.target.id) {
+                        color = '#1d74f8';
+                    } else if (d.id === l.source.id) {
+                        color = '#1d74f8'
+                    }
+                    return color;
+                })
+            }
+
+            function nodeOut(d) {
+                links.style('stroke', '#999')
+            }
+            // events end
         }
     });
 }
