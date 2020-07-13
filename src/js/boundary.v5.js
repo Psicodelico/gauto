@@ -127,6 +127,7 @@ function create({
         });
     simulation.nodes(initNodes).force('link').links(initLinks);
 
+    // events start
     function drag() {
         function dragstarted(d) {
             if (!d3.event.active) simulation.alphaTarget(0.3).restart();
@@ -165,7 +166,7 @@ function create({
     function nodeOut(d) {
         links.style('stroke', '#999')
     }
-
+    // events end
     return Object.assign(svg, {
         update({
             n,
@@ -193,11 +194,11 @@ function changeData(n) {
     let param;
     switch (n) {
         case 1:
-            param = yb_mock1;
+            param = yb_mock;
             break;
         case 2:
             param = yb_mock2;
             break;
     }
-    setData(param);
+    handle.update(digest(param));
 }
