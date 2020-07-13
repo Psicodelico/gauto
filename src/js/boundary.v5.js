@@ -126,9 +126,9 @@ function create() {
         links.style('stroke', function (l) {
             var color = '#999';
             if (d.id === l.target.id) {
-                color = '#4aa6fc';
+                color = '#1d74f8';
             } else if (d.id === l.source.id) {
-                color = '#4aa6fc'
+                color = '#1d74f8'
             }
             return color;
         })
@@ -149,6 +149,10 @@ function create() {
             nodes: n,
             links: l
         }) {
+            const cache = new Map(nodes.data().map(d => [d.id, d]));
+            n = n.map(d => Object.assign(cache.get(d.id) || {}, d));
+            l = l.map(d => Object.assign({}, d));
+
             links = links.data(l)
                 .join('line')
                 .attr('stroke-width', 1);
@@ -177,10 +181,11 @@ function create() {
                     return -this.getBBox().width / 2
                 })
                 .attr('y', 36)
-            /* .each(function (d) {
-                d.width = this.getBBox().width;
-            }) */
+            // .each(function (d) {
+            //     d.width = this.getBBox().width;
+            // })
             simulation.nodes(n).force('link').links(l);
+            simulation.alpha(1).restart();
         }
     });
 }
