@@ -33,21 +33,27 @@ function digest(mock) {
     }
 }
 
+function init() {
+    const eleWrapper = document.getElementById('svg-wrapper');
+    const element = document.getElementById('svg');
+    return {
+        el: d3.select(element),
+        wrapperRect: eleWrapper.getBoundingClientRect(),
+        svgRect: element.getBBox()
+    }
+}
 
-const eleWrapper = document.getElementById('svg-wrapper');
-const eleRect = eleWrapper.getBoundingClientRect();
+const $svg = init();
 
-const width = eleRect.width;
-const height = eleRect.height;
-
-const element = document.getElementById('svg');
+const width = $svg.wrapperRect.width,
+    height = $svg.wrapperRect.height;
+const color = d3.scaleOrdinal(d3.schemeTableau10);
 
 const zoom = d3.zoom().on("zoom", function () {
     svg.attr("transform", d3.event.transform)
 })
 
-const origin = d3
-    .select(element)
+const origin = $svg.el
     .attr('viewBox', `0, 0, ${width}, ${height}`)
     .call(zoom);
 
@@ -134,7 +140,7 @@ function setData(result) {
     simulation.nodes(result.nodes).force('link').links(result.links);
 }
 
-let result = digest(yb_mock);
+let result = digest(yb_mock2);
 setData(result);
 
 function drag() {
@@ -176,4 +182,17 @@ function nodeOver(d) {
 
 function nodeOut(d) {
     links.style('stroke', '#999')
+}
+
+function changeData(n) {
+    let param;
+    switch (n) {
+        case 1:
+            param = yb_mock1;
+            break;
+        case 2:
+            param = yb_mock2;
+            break;
+    }
+    setData(param);
 }
