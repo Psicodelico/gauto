@@ -48,10 +48,7 @@ const $svg = init();
 const width = $svg.wrapperRect.width,
     height = $svg.wrapperRect.height;
 
-function create({
-    nodes: initNodes,
-    links: initLinks
-}) {
+function create() {
     const param = {
         radius: 15,
         color: d3.scaleOrdinal(d3.schemeTableau10)
@@ -69,41 +66,12 @@ function create({
         .append('g')
         .attr('transform', `translate(${0}, ${0})`);
 
-    let links = g
-        .selectAll('line')
-        .data(initLinks)
-        .join('line')
-        .attr('stroke-width', 1);
+    var links = g.append('g')
+        .selectAll('line');
 
-    let nodes = g.append('g')
+    var nodes = g.append('g')
         .selectAll('g')
-        .data(initNodes)
-        .join('g')
-        .call(drag())
-        .on('mouseover', nodeOver)
-        .on('mouseout', nodeOut);
 
-    const img = nodes
-        .append('image')
-        .attr('xlink:href', d => {
-            return `../assets/images/topo/${d.type}.png`
-        })
-        .attr('width', 2 * param.radius)
-        .attr('height', 2 * param.radius)
-        .attr('transform', `translate(${-param.radius},${-param.radius})`)
-    img.append('title')
-        .text(d => d.id);
-
-    nodes.append('text')
-        .attr('transform', 'scale(0.75)')
-        .text(d => d.type)
-        .attr('x', function (d) {
-            return -this.getBBox().width / 2
-        })
-        .attr('y', 36)
-    /* .each(function (d) {
-        d.width = this.getBBox().width;
-    }) */
 
     const simulation = d3
         .forceSimulation()
@@ -125,7 +93,10 @@ function create({
                 .attr('y', d => d.y) //Math.max(radius, Math.min(height - radius, d.y))); */
             nodes.attr('transform', d => `translate(${d.x},${d.y})`)
         });
-    simulation.nodes(initNodes).force('link').links(initLinks);
+
+    // Terminate the force layout when this cell re-runs.
+    // invalidation.then(() => simulation.stop());
+    // simulation.stop();
 
     // events start
     function drag() {
@@ -168,23 +139,55 @@ function create({
     }
     // events end
     return Object.assign(svg, {
-        update({
-            n,
-            l
-        }) {
-
-        },
         resetZoom() {
             svg.transition()
                 .duration(750)
                 .call(zoom.transform, d3.zoomIdentity);
 
+        },
+        update({
+            nodes: n,
+            links: l
+        }) {
+            links = links.data(l)
+                .join('line')
+                .attr('stroke-width', 1);
+
+            nodes = nodes.data(n)
+                .join('g')
+                .call(drag())
+                .on('mouseover', nodeOver)
+                .on('mouseout', nodeOut);
+
+            const img = nodes
+                .append('image')
+                .attr('xlink:href', d => {
+                    return `../assets/images/topo/${d.type}.png`
+                })
+                .attr('width', 2 * param.radius)
+                .attr('height', 2 * param.radius)
+                .attr('transform', `translate(${-param.radius},${-param.radius})`)
+            img.append('title')
+                .text(d => d.id);
+
+            nodes.append('text')
+                .attr('transform', 'scale(0.75)')
+                .text(d => d.type)
+                .attr('x', function (d) {
+                    return -this.getBBox().width / 2
+                })
+                .attr('y', 36)
+            /* .each(function (d) {
+                d.width = this.getBBox().width;
+            }) */
+            simulation.nodes(n).force('link').links(l);
         }
     });
 }
 
 // console.log(digest(yb_mock));
-let handle = create(digest(yb_mock));
+let handle = create();
+handle.update(digest(yb_mock));
 
 function reset() {
     handle.resetZoom();
