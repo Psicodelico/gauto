@@ -125,6 +125,11 @@ function create() {
                         .on('mouseover', nodeOver)
                         .on('mouseout', nodeOut)
                         .on('dblclick', nodeDBClick);
+                    const rect = g.append('rect')
+                        .attr('width', 1.8 * param.radius)
+                        .attr('height', 1.8 * param.radius)
+                        .attr('fill', '#4aa6fc')
+                        .attr('transform', `translate(${-0.9 * param.radius},${-0.9 * param.radius})`);
                     const img = g
                         .append('image')
                         .attr('xlink:href', d => {
@@ -173,19 +178,32 @@ function create() {
             }
 
             function nodeOver(d) {
+                let ns = [],
+                    id = d.id;
                 links.style('stroke', function (l) {
                     var color = '#999';
-                    if (d.id === l.target.id) {
+                    if (id === l.target.id) {
                         color = '#1d74f8';
-                    } else if (d.id === l.source.id) {
+                        ns.push(l.source.id);
+                    } else if (id === l.source.id) {
                         color = '#1d74f8'
+                        ns.push(l.target.id);
                     }
                     return color;
-                })
+                });
+                // debugger;
+                // console.log(links, nodes);
+                ns.push(id);
+                nodes.selectAll('image').style('filter', function (n) {
+                    if (!!~ns.indexOf(n.id)) {
+                        return 'url(#hv)';
+                    }
+                });
             }
 
             function nodeOut(d) {
-                links.style('stroke', '#999')
+                links.style('stroke', '#999');
+                nodes.selectAll('rect').style('filter', null);
             }
 
             function nodeDBClick(d) {

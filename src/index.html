@@ -21,7 +21,14 @@
         <button type="button" onclick="changeData(2)">data2</button>
     </div>
     <div id="svg-wrapper">
-        <svg id="svg" viewBox="0, 0, 800, 600" transform="translate(0,0)"></svg>
+        <svg id="svg" viewBox="0, 0, 800, 600" transform="translate(0,0)">
+            <filter id="hv" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox"
+                primitiveUnits="userSpaceOnUse" color-interpolation-filters="linearRGB">
+                <feConvolveMatrix order="3 3" kernelMatrix="-3 0 0 0 -3 0 0 0 4" divisor="1" bias="1" targetX="0"
+                    targetY="0" edgeMode="duplicate" preserveAlpha="true" x="0%" y="0%" width="100%" height="100%"
+                    in="dropShadow" result="convolveMatrix1" />
+            </filter>
+        </svg>
     </div>
     <!-- <script src="./js/modify.js"></script> -->
     <script src="./js/boundary.v5.js"></script>
