@@ -123,7 +123,8 @@ function create() {
                     const g = enter.append('g')
                         .call(drag())
                         .on('mouseover', nodeOver)
-                        .on('mouseout', nodeOut);;
+                        .on('mouseout', nodeOut)
+                        .on('dblclick', nodeDBClick);
                     const img = g
                         .append('image')
                         .attr('xlink:href', d => {
@@ -185,6 +186,11 @@ function create() {
 
             function nodeOut(d) {
                 links.style('stroke', '#999')
+            }
+
+            function nodeDBClick(d) {
+                event.stopPropagation();
+                console.log(d, this);
             }
             // events end
         }
